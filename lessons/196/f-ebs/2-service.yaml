@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fast-service
+  namespace: dev-ns
+spec:
+  clusterIP: None
+  ports:
+    - port: 8000
+      targetPort: http
+  selector:
+    app: fastapi

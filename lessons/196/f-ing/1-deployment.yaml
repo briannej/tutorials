@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs
+  namespace: dev-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextjs
+  template:
+    metadata:
+      labels:
+        app: nextjs
+    spec:
+      containers:
+        - name: nextjs
+          image: fnej/nextjs-frontend:v0.0.6
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: AIRFLOW_WEB_SERVICE_URL
+              value: "http://fastapi-service:8000"
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 128Mi
+              cpu: 100m
