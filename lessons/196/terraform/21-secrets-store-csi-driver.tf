@@ -4,7 +4,7 @@ resource "helm_release" "secrets_csi_driver" {
   repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
   chart      = "secrets-store-csi-driver"
   namespace  = "kube-system"
-  version    = "1.4.3"
+  version    = "1.4.7"
 
   # MUST be set if you use ENV variables
   set {
@@ -12,7 +12,7 @@ resource "helm_release" "secrets_csi_driver" {
     value = true
   }
 
-  depends_on = [helm_release.efs_csi_driver]
+  #depends_on = [helm_release.efs_csi_driver]
 }
 
 resource "helm_release" "secrets_csi_driver_aws_provider" {
@@ -21,7 +21,7 @@ resource "helm_release" "secrets_csi_driver_aws_provider" {
   repository = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
   chart      = "secrets-store-csi-driver-provider-aws"
   namespace  = "kube-system"
-  version    = "0.3.9"
+  version    = "0.3.10"
 
   depends_on = [helm_release.secrets_csi_driver]
 }
@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "myapp_secrets" {
     condition {
       test     = "StringEquals"
       variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:12-example:myapp"]
+      values   = ["system:serviceaccount:dev-ns:myapp"]
     }
 
     principals {

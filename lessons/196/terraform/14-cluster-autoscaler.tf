@@ -70,7 +70,7 @@ resource "helm_release" "cluster_autoscaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   namespace  = "kube-system"
-  version    = "9.37.0"
+  version    = "9.44.0"
 
   set {
     name  = "rbac.serviceAccount.name"
@@ -85,7 +85,7 @@ resource "helm_release" "cluster_autoscaler" {
   # MUST be updated to match your region 
   set {
     name  = "awsRegion"
-    value = "us-east-2"
+    value = "ca-central-1"
   }
 
   depends_on = [helm_release.metrics_server]

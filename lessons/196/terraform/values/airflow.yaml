@@ -1,0 +1,80 @@
+extraEnv: |
+  - name: AIRFLOW__CORE__LOAD_EXAMPLES
+    value: 'True'
+
+createUserJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+migrateDatabaseJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+
+redis:
+  enabled: true
+  # This is your custom, static password.
+  # The Helm chart will create a Secret with this password and configure Redis + Broker URLs accordingly.
+  password: "my-static-redis-password"
+
+extraSecrets:
+  '{{ .Release.Name }}-example':
+    useHelmHooks: false
+
+extraConfigMaps:
+  '{{ .Release.Name }}-example':
+    useHelmHooks: false
+
+
+useStandardNaming: true
+
+# Airflow executor
+# One of: LocalExecutor, LocalKubernetesExecutor, CeleryExecutor, KubernetesExecutor, CeleryKubernetesExecutor
+executor: "CeleryKubernetesExecutor"
+
+
+workers:
+#   keda:
+#     enabled: true
+#     # Minimum number of workers created by keda
+#     minReplicaCount: 1
+#     # Maximum number of workers created by keda
+#     maxReplicaCount: 10
+
+  persistence:
+    # Enable persistent volumes
+    enabled: false
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 6Gi
+    requests:
+      cpu: 1000m
+      memory: 3Gi
+
+  hpa:
+    enabled: true
+
+    # Minimum number of workers created by HPA
+    minReplicaCount: 1
+
+    # Maximum number of workers created by HPA
+    maxReplicaCount: 2
+
+    # Specifications for which to use to calculate the desired replica count
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 70
+
+
+config:
+  celery:
+    worker_concurrency: 16
