@@ -12,5 +12,5 @@ spec:
     name: in-cluster
   source:
     path: lessons/200/argocd/project
-    repoURL: git@github.com:antonputra/tutorials.git
+    repoURL: git@github.com:briannej/tutorials.git
     targetRevision: main
